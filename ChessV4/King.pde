@@ -5,12 +5,49 @@ class King extends Piece {
     shape = (black)? loadImage("Sprites/Chess_kdt60.png") : loadImage("Sprites/Chess_klt60.png");
   }
   
-  boolean isValid(Move m) {
-    if((abs(m.nx - m.ox) < 2 && abs(m.ny - m.oy) < 2) || (m.ny - m.oy == 0 && (m.nx - m.ox == 2 || m.nx - m.ox == -2))) {
-      if(m.nx != m.ox || m.ny != m.oy)
-        return(m.nx >= 0 && m.nx < 8 && m.ny >= 0 && m.ny < 8);
+  Move[] getMoves(Move m) {
+    ArrayList<Move> movesList = new ArrayList<Move>();
+    if(m.oy - 1 >= 0)
+      if(board[m.ox][m.oy-1] == null || (board[m.ox][m.oy].black != board[m.ox][m.oy-1].black))
+        movesList.add(new Move(m.ox, m.oy, m.ox, m.oy-1));
+    if(m.ox + 1 < 8 && m.oy - 1 >= 0)
+      if(board[m.ox+1][m.oy-1] == null || (board[m.ox][m.oy].black != board[m.ox+1][m.oy-1].black))
+        movesList.add(new Move(m.ox, m.oy, m.ox+1, m.oy-1));
+    if(m.ox + 1 < 8)
+      if(board[m.ox+1][m.oy] == null || (board[m.ox][m.oy].black != board[m.ox+1][m.oy].black))
+        movesList.add(new Move(m.ox, m.oy, m.ox+1, m.oy));
+    if(m.ox + 1 < 8 && m.oy + 1 < 8)
+      if(board[m.ox+1][m.oy+1] == null || (board[m.ox][m.oy].black != board[m.ox+1][m.oy+1].black))
+        movesList.add(new Move(m.ox, m.oy, m.ox+1, m.oy+1));
+    if(m.oy + 1 < 8)
+      if(board[m.ox][m.oy+1] == null || (board[m.ox][m.oy].black != board[m.ox][m.oy+1].black))
+        movesList.add(new Move(m.ox, m.oy, m.ox, m.oy+1));
+    if(m.ox - 1 >= 0 && m.oy + 1 < 8)
+      if(board[m.ox-1][m.oy+1] == null || (board[m.ox][m.oy].black != board[m.ox-1][m.oy+1].black))
+        movesList.add(new Move(m.ox, m.oy, m.ox-1, m.oy+1));
+    if(m.ox - 1 >= 0)
+      if(board[m.ox-1][m.oy] == null || (board[m.ox][m.oy].black != board[m.ox-1][m.oy].black))
+        movesList.add(new Move(m.ox, m.oy, m.ox-1, m.oy));
+    if(m.ox - 1 >= 0 && m.oy - 1 >= 0)
+      if(board[m.ox-1][m.oy-1] == null || (board[m.ox][m.oy].black != board[m.ox-1][m.oy-1].black))
+        movesList.add(new Move(m.ox, m.oy, m.ox-1, m.oy-1));
+    if(board[m.ox][m.oy].black) {
+      if(m.ox == 4 && m.oy == 0) {
+        if(board[3][0] == null && board[2][0] == null && board[1][0] == null)
+          movesList.add(new Move(m.ox, m.oy, m.ox - 2, m.oy));
+        if(board[5][0] == null && board[6][0] == null)
+          movesList.add(new Move(m.ox, m.oy, m.ox + 2, m.oy));
+      }
+    } else {
+      if(m.ox == 4 && m.oy == 7) {
+        if(board[3][7] == null && board[2][7] == null && board[1][7] == null)
+          movesList.add(new Move(m.ox, m.oy, m.ox - 2, m.oy));
+        if(board[5][7] == null && board[6][7] == null)
+          movesList.add(new Move(m.ox, m.oy, m.ox + 2, m.oy));
+      }
     }
-    return false;
+    Move[] moves = movesList.toArray(new Move[movesList.size()]);
+    return (moves.length > 0)? moves : null;
   }
   
   Piece copy() {

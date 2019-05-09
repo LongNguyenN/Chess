@@ -5,11 +5,42 @@ class Knight extends Piece {
     shape = (black)? loadImage("Sprites/Chess_ndt60.png") : loadImage("Sprites/Chess_nlt60.png");
   }
   
-  boolean isValid(Move m) {
-    if((abs(m.nx - m.ox) == 1 && abs(m.ny - m.oy) == 2) || (abs(m.nx - m.ox) == 2 && abs(m.ny - m.oy) == 1)) {
-      return m.nx >= 0 && m.nx < 8 && m.ny >= 0 && m.ny < 8;
+  Move[] getMoves(Move m) {
+    ArrayList<Move> movesList = new ArrayList<Move>();
+    if(m.ox + 2 < 8 && m.oy - 1 >= 0) {
+      if(board[m.ox+2][m.oy-1] == null || (board[m.ox][m.oy].black != board[m.ox+2][m.oy-1].black))
+      movesList.add(new Move(m.ox, m.oy, m.ox + 2, m.oy - 1));
     }
-    return false;
+    if(m.ox + 2 < 8 && m.oy + 1 < 8) {
+      if(board[m.ox+2][m.oy+1] == null || (board[m.ox][m.oy].black != board[m.ox+2][m.oy+1].black))
+      movesList.add(new Move(m.ox, m.oy, m.ox + 2, m.oy + 1));
+    }
+    if(m.ox + 1 < 8 && m.oy + 2 < 8) {
+      if(board[m.ox+1][m.oy+2] == null || (board[m.ox][m.oy].black != board[m.ox+1][m.oy+2].black))
+      movesList.add(new Move(m.ox, m.oy, m.ox + 1, m.oy + 2));
+    }
+    if(m.ox - 1 >= 0 && m.oy + 2 < 8) {
+      if(board[m.ox-1][m.oy+2] == null || (board[m.ox][m.oy].black != board[m.ox-1][m.oy+2].black))
+      movesList.add(new Move(m.ox, m.oy, m.ox - 1, m.oy + 2));
+    }
+    if(m.ox - 2 >= 0 && m.oy + 1 < 8) {
+      if(board[m.ox-2][m.oy+1] == null || (board[m.ox][m.oy].black != board[m.ox-2][m.oy+1].black))
+      movesList.add(new Move(m.ox, m.oy, m.ox - 2, m.oy + 1));
+    }
+    if(m.ox - 2 >= 0 && m.oy - 1 >= 0) {
+      if(board[m.ox-2][m.oy-1] == null || (board[m.ox][m.oy].black != board[m.ox-2][m.oy-1].black))
+      movesList.add(new Move(m.ox, m.oy, m.ox - 2, m.oy - 1));
+    }
+    if(m.ox - 1 >= 0 && m.oy - 2 >= 0) {
+      if(board[m.ox-1][m.oy-2] == null || (board[m.ox][m.oy].black != board[m.ox-1][m.oy-2].black))
+      movesList.add(new Move(m.ox, m.oy, m.ox - 1, m.oy - 2));
+    }
+    if(m.ox + 1 < 8 && m.oy - 2 >= 0) {
+      if(board[m.ox+1][m.oy-2] == null || (board[m.ox][m.oy].black != board[m.ox+1][m.oy-2].black))
+      movesList.add(new Move(m.ox, m.oy, m.ox + 1, m.oy - 2));
+    }
+    Move[] moves = movesList.toArray(new Move[movesList.size()]);
+    return (moves.length > 0)? moves : null;
   }
   
   Piece copy() {

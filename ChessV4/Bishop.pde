@@ -5,12 +5,42 @@ class Bishop extends Piece {
     shape = (black)? loadImage("Sprites/Chess_bdt60.png") : loadImage("Sprites/Chess_blt60.png");
   }
   
-  boolean isValid(Move m) {
-    if((abs(m.nx - m.ox) != 0) && (((float)abs(m.ny - m.oy)/abs(m.nx - m.ox)) == 1)) {
-      if(m.nx != m.ox || m.ny != m.oy)
-        return(m.nx >= 0 && m.nx < 8 && m.ny >= 0 && m.ny < 8);
+  Move[] getMoves(Move m) {
+    ArrayList<Move> movesList = new ArrayList<Move>();
+    for(int i = 1; m.ox + i < 8 && m.oy + i < 8; i++) {
+      if(board[m.ox+i][m.oy+i] == null) {
+        movesList.add(new Move(m.ox, m.oy, m.ox + i, m.oy + i));
+      } else if(board[m.ox][m.oy].black != board[m.ox+i][m.oy+i].black) {
+        movesList.add(new Move(m.ox, m.oy, m.ox + i, m.oy + i));
+        break;
+      } else break;
     }
-    return false;
+    for(int i = 1; m.ox - i >= 0 && m.oy - i >= 0; i++) {
+      if(board[m.ox-i][m.oy-i] == null) {
+        movesList.add(new Move(m.ox, m.oy, m.ox - i, m.oy - i));
+      } else if(board[m.ox][m.oy].black != board[m.ox-i][m.oy-i].black) {
+        movesList.add(new Move(m.ox, m.oy, m.ox - i, m.oy - i));
+        break;
+      } else break;
+    }
+    for(int i = 1; m.ox + i < 8 && m.oy - i >= 0; i++) {
+      if(board[m.ox+i][m.oy-i] == null)
+        movesList.add(new Move(m.ox, m.oy, m.ox + i, m.oy - i));
+      else if(board[m.ox][m.oy].black != board[m.ox+i][m.oy-i].black) {
+        movesList.add(new Move(m.ox, m.oy, m.ox + i, m.oy - i));
+        break;
+      } else break;
+    }
+    for(int i = 1; m.ox - i >= 0 && m.oy + i < 8; i++) {
+      if(board[m.ox-i][m.oy+i] == null)
+        movesList.add(new Move(m.ox, m.oy, m.ox - i, m.oy + i));
+      else if(board[m.ox][m.oy].black != board[m.ox-i][m.oy+i].black) {
+        movesList.add(new Move(m.ox, m.oy, m.ox - i, m.oy + i));
+        break;
+      } else break;
+    }
+    Move[] moves = movesList.toArray(new Move[movesList.size()]);
+    return (moves.length > 0)? moves : null;
   }
   
   Piece copy() {

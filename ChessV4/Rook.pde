@@ -5,12 +5,42 @@ class Rook extends Piece {
     shape = (black)? loadImage("Sprites/Chess_rdt60.png") : loadImage("Sprites/Chess_rlt60.png");
   }
   
-  boolean isValid(Move m) {
-    if((m.nx - m.ox) == 0 || (m.ny - m.oy) == 0) {
-      if(m.nx != m.ox || m.ny != m.oy)
-        return(m.nx >= 0 && m.nx < 8 && m.ny >= 0 && m.ny < 8);
+  Move[] getMoves(Move m) {
+    ArrayList<Move> movesList = new ArrayList<Move>();
+    for(int i = 1; m.oy + i < 8; i++) {
+      if(board[m.ox][m.oy+i] == null)
+        movesList.add(new Move(m.ox, m.oy, m.ox, m.oy+i));
+      else if(board[m.ox][m.oy].black != board[m.ox][m.oy+i].black) {
+        movesList.add(new Move(m.ox, m.oy, m.ox, m.oy+i));
+        break;
+      } else break;
     }
-    return false;
+    for(int i = 1; m.oy - i >= 0; i++) {
+      if(board[m.ox][m.oy-i] == null)
+        movesList.add(new Move(m.ox, m.oy, m.ox, m.oy-i));
+      else if(board[m.ox][m.oy].black != board[m.ox][m.oy-i].black) {
+        movesList.add(new Move(m.ox, m.oy, m.ox, m.oy-i));
+        break;
+      } else break;
+    }
+    for(int i = 1; m.ox + i < 8; i++) {
+      if(board[m.ox+i][m.oy] == null)
+        movesList.add(new Move(m.ox, m.oy, m.ox+i, m.oy));
+      else if(board[m.ox][m.oy].black != board[m.ox+i][m.oy].black) {
+        movesList.add(new Move(m.ox, m.oy, m.ox+i, m.oy));
+        break;
+      } else break;
+    }
+    for(int i = 1; m.ox - i >= 0; i++) {
+      if(board[m.ox-i][m.oy] == null)
+        movesList.add(new Move(m.ox, m.oy, m.ox-i, m.oy));
+      else if(board[m.ox][m.oy].black != board[m.ox-i][m.oy].black) {
+        movesList.add(new Move(m.ox, m.oy, m.ox-i, m.oy));
+        break;
+      } else break;
+    }
+    Move[] moves = movesList.toArray(new Move[movesList.size()]);
+    return (moves.length > 0)? moves : null;
   }
   
   Piece copy() {

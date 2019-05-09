@@ -14,7 +14,7 @@ abstract class Piece {
     this.type = n_type;
   }
   
-  abstract boolean isValid(Move m);
+  abstract Move[] getMoves(Move m);
   
   void draw() {
     image(shape, x+20, y+20);
@@ -26,6 +26,10 @@ abstract class Piece {
   
   void setY(int n_y) {
     y = n_y;
+  }
+  
+  String toString() {
+    return black + " " + type + " (" + x + "," + y + ")";
   }
   
   abstract Piece copy();

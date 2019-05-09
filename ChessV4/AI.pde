@@ -4,17 +4,17 @@ class AI extends Player{
   
   AI() {
     ai = true;
-    refSim = new MovAlgo();
   }
   
   Move getMove() {
-    if(refSim.catalog.size()%2 == 0) return randomMove();
-    else if(refSim.catalog.size()%2 == 1) return randomMove();
-    return null;
-  }
-  
-  void updateMove(Move m) {
-    refSim.playMove(m);
+    if(refSim.catalog.size()%2 == 0) {
+      //desiredMove = randomMove();
+      desiredMove = miniMax(1, false);
+    } else {
+      desiredMove = randomMove();
+      //desiredMove = miniMax(1, true);
+    }
+    return desiredMove;
   }
   
   Move randomMove() {
@@ -29,54 +29,57 @@ class AI extends Player{
       int currentValue = -infinity;
       int bestValue = currentValue;
       for(int i = 0; i < movesList.length; i++) {
-        refSim.playMove(movesList[i]);
-        currentValue = alphabeta(depth-1, -infinity, infinity, false);
-        refSim.revertTurn();
+        currentValue = alphabeta(movesList[i], depth, -infinity, infinity, true);
         if(bestValue <= currentValue) {
           bestValue = currentValue;
           bestMoveIndex = i;
         }
       }
+      println(movesList[bestMoveIndex] + " " + bestValue);
       return movesList[bestMoveIndex];
     } else {
       int currentValue = infinity;
       int bestValue = currentValue;
       for(int i = 0; i < movesList.length; i++) {
-        refSim.playMove(movesList[i]);
-        currentValue = alphabeta(depth-1, -infinity, infinity, true);
-        refSim.revertTurn();
+        currentValue = alphabeta(movesList[i], depth, -infinity, infinity, false);
         if(bestValue >= currentValue) {
           bestValue = currentValue;
           bestMoveIndex = i;
         }
       }
+      println(movesList[bestMoveIndex] + " " + bestValue);
       return movesList[bestMoveIndex];
     }
   }
   
-  int alphabeta(int depth, int alpha, int beta, boolean maximizingPlayer) {
+  int alphabeta(Move node, int depth, int alpha, int beta, boolean maximizingPlayer) {
+    int turn = refSim.catalog.size();
+    refSim.playMove(node);
     if(depth == 0 || gameFinished()) {
+      if(refSim.catalog.size() > turn) refSim.revertTurn();
       return getPointsFor(true) - getPointsFor(false);
     }
-    Move[] movesList = refSim.getAllMoves();
+    Move[] movesList = ref.getAllMoves();
     if(maximizingPlayer) {
       int value = -infinity;
-      for(int i = 0; i < movesList.length; i++) {
-        refSim.playMove(movesList[i]);
-        value = Math.max(value, alphabeta(depth-1, alpha, beta, false));
+      for(Move child : movesList) {
+        value = Math.max(value, alphabeta(child, depth-1, alpha, beta, false));
         alpha = Math.max(alpha, value);
-        refSim.revertTurn();
         if(alpha >= beta) break;
-      } return value;
+      }
+      if(refSim.catalog.size() > turn)
+        refSim.revertTurn();
+      return value;
     } else {
       int value = infinity;
-      for(int i = 0; i < movesList.length; i++) {
-        refSim.playMove(movesList[i]);
-        value = Math.min(value, alphabeta(depth-1, alpha, beta, true));
-        beta = Math.min(beta, value);
-        refSim.revertTurn();
+      for(Move child : movesList) {
+        value = Math.min(value, alphabeta(child, depth-1, alpha, beta, true));
+        beta = min(beta, value);
         if(alpha >= beta) break;
-      } return value;
+      }
+      if(refSim.catalog.size() > turn)
+        refSim.revertTurn();
+      return value;
     }
   }
   
@@ -93,7 +96,7 @@ class AI extends Player{
     Piece p = null;
     for(int i = 0; i < 8; i++)
       for(int j = 0; j < 8; j++) {
-        p = refSim.current.b[i][j];
+        p = refSim.board[i][j];
         if(p != null && black == p.black)
           points += pieceWorth(p.type);
       }

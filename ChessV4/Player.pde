@@ -2,8 +2,10 @@ class Player {
   
   boolean ai;
   MovAlgo refSim;
+  Move desiredMove;
   
   Player() {
+    refSim = new MovAlgo();
     ai = false;
   }
   
@@ -12,11 +14,21 @@ class Player {
   }
   
   void updateMove(Move m) {
+    refSim.playMove(m);
+  }
+  
+  void updateBoardState() {
     
   }
   
-  Move getMove() {
-    return new Move(0,0,0,0);
+  Move getMove() { 
+    return desiredMove; 
   }
+  
+  void putClickedInHand() { }
+  
+  void moveInHandToMouse() {}
+  
+  void placeInHandOnBoard() {}
   
 }
