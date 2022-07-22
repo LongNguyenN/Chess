@@ -9,10 +9,10 @@ class Game {
     gameOver = false;
     pause = false;
     ref = new MovAlgo();
-    //player1 = new Human(false);
-    //player2 = new Human(false);
-    player1 = new AI(true);
-    player2 = new AI(true);
+    player1 = new Human(false);
+    player2 = new Human(false);
+    //player1 = new AI(true);
+    //player2 = new AI(true);
     playerScreen = 3;
   }
   
